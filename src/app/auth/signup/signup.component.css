@@ -1,0 +1,14 @@
+.signup-page {
+    text-align: center;
+    margin-top: 5rem;
+  }
+  
+  #controls {
+    display: block;
+    margin: 0 auto;
+    width: 40%;
+  }
+
+  mat-form-field {
+    width: 50%;
+  }
