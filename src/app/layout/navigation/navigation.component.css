@@ -2,7 +2,13 @@
     flex: 1 1 auto;
 }
 
-#menu-item button{
-    display: block;
-    margin: 0 auto;
+.spacer-mini{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.spacer-mini a{
+    padding-top: 8px;
+    margin-left: 10px;
+    color: white;
 }

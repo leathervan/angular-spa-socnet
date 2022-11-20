@@ -1,1 +1,56 @@
-<p>user-posts works!</p>
+<div *ngIf="isPostsLoaded && isUserDataLoaded" class="index-page">
+    <div style="text-align: right">
+        <button mat-flat-button color="primary" routerLink="add">Add post</button>
+    </div>
+
+    <mat-card class="post-card" *ngFor="let post of posts; let i = index" fxFlexAlign="stretch">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <mat-card-header>
+                <mat-card-subtitle text-align="start">Posted by {{post.username}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-actions>
+                <button color="warn" mat-button (click)="deletePost(post, i)">
+                    <mat-icon color="warn">delete</mat-icon>
+                </button>
+            </mat-card-actions>
+        </div>
+        <img *ngIf="post.image != null" mat-card-image [src]="formatImage(post.image)" alt="post image">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; flex-direction: column;">
+                <mat-card-title text-align="start">{{post.title}}</mat-card-title>
+                <mat-card-subtitle text-align="start">{{post.location}}</mat-card-subtitle>
+            </div>
+            <mat-card-actions text-align="end">
+                <button *ngIf="isUserDataLoaded" mat-button (click)="likePost(post.id!, i)"
+                    [ngClass]="post.userLiked!.indexOf(user.username) !== -1 ? 'is-liked' : 'not-liked'">
+                    <mat-icon>favorite</mat-icon> {{post.likes}} likes
+                </button>
+            </mat-card-actions>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: start;">
+            <mat-card-content>
+                <p>{{post.caption}}</p>
+            </mat-card-content>
+        </div>
+
+        <div style="text-align: left">
+            <p *ngFor="let comment of post.comments; let c = index">
+                <span style="font-weight: 500;">{{comment.username}}</span>: {{comment.message}}
+                <button color="accent" mat-button (click)="deleteComment(comment.id, i, c)">
+                    <mat-icon color="accent">clear</mat-icon>
+                </button>
+            </p>
+        </div>
+
+        <mat-form-field class="w-100">
+            <mat-label>Write a comment...</mat-label>
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <input #nameText matInput #message maxlength="128">
+                <button mat-flat-button color="primary" (click)="commentPost(nameText.value, post.id!, i)">
+                    <mat-icon>send</mat-icon>
+                </button>
+            </div>
+        </mat-form-field>
+
+    </mat-card>
+</div>

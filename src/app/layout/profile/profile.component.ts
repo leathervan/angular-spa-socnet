@@ -7,6 +7,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { PostService } from 'src/app/services/post.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { UserService } from 'src/app/services/user.service';
+import { AddPostComponent } from '../add-post/add-post.component';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 
 @Component({
@@ -74,7 +75,6 @@ export class ProfileComponent implements OnInit {
   }
 
   formatImage(img: any): any {
-    console.log(img);
     if (img == null) {
       return null;
     }

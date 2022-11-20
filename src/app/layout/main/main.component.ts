@@ -62,18 +62,18 @@ export class MainComponent implements OnInit {
   likePost(postId: number, postIndex: number): void {
     const post = this.posts[postIndex];
 
-    if (!post.userLiked.includes(this.user.username)) {
-      this.postService.likePost(post.id, this.user.username)
+    if (!post.userLiked!.includes(this.user.username)) {
+      this.postService.likePost(post.id!, this.user.username)
         .subscribe(() => {
-          post.userLiked.push(this.user.username);
+          post.userLiked!.push(this.user.username);
           this.notificationService.showSnackBar('Liked ;)');
           window.location.reload();
         });
     } else {
-      this.postService.likePost(post.id, this.user.username)
+      this.postService.likePost(post.id!, this.user.username)
         .subscribe(() => {
-          const index = post.userLiked.indexOf(this.user.username, 0);
-          post.userLiked.splice(index, 1);
+          const index = post.userLiked!.indexOf(this.user.username, 0);
+          post.userLiked!.splice(index, 1);
           this.notificationService.showSnackBar('Like removed ;(');
           window.location.reload();
         });
@@ -85,14 +85,13 @@ export class MainComponent implements OnInit {
 
     this.commentService.createComment(post.id!, message)
       .subscribe(data => {
-        post.comments.push(data);
+        post.comments!.push(data);
         window.location.reload();
       });
   }
 
   formatImage(img: any): any {
-    console.log(img);
-    if(img == null) {
+    if (img == null) {
       return null;
     }
 
