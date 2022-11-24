@@ -38,12 +38,8 @@ export class SignupComponent implements OnInit {
       password: this.signupForm.value.password,
       confirmPassword: this.signupForm.value.confirmPassword
     }).subscribe(data => {
-      console.log(data);
-
-      this.notificationService.showSnackBar('Success registered');
+      this.notificationService.showSnackBar(data.message);
       this.router.navigate(['/login']);
-    }, error => {
-      this.notificationService.showSnackBar('Something went wrong');
     });
   }
 

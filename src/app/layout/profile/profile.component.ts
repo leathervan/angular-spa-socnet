@@ -39,7 +39,11 @@ export class ProfileComponent implements OnInit {
 
     this.imageService.getImageToUser()
       .subscribe(data => {
-        this.userProfileImage = data.imageBytes;
+        try {
+          this.userProfileImage = data.imageBytes;
+        } catch {
+          this.notificationService.showSnackBar(data.message);
+        }
       });
   }
 

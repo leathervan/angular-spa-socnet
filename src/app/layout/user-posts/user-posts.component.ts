@@ -45,7 +45,11 @@ export class UserPostsComponent implements OnInit {
     posts.forEach(p => {
       this.imageService.getImageToPost(p.id!)
         .subscribe(data => {
-          p.image = data.imageBytes;
+          try {
+            p.image = data.imageBytes;
+          } catch {
+            this.notificationService.showSnackBar(data.message);
+          }
         })
     });
   }
