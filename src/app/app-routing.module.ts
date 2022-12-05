@@ -7,6 +7,7 @@ import { AddPostComponent } from './layout/add-post/add-post.component';
 import { MainComponent } from './layout/main/main.component';
 import { ProfileComponent } from './layout/profile/profile.component';
 import { UserPostsComponent } from './layout/user-posts/user-posts.component';
+import { UsersProfileComponent } from './layout/users-profile/users-profile.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
       { path: 'add', component: AddPostComponent, canActivate: [AuthGuardService] }
     ]
   },
+  { path: 'user/:id', component: UsersProfileComponent, canActivate: [AuthGuardService] },
   { path: '', redirectTo: 'main', pathMatch: 'full' }
 ];
 

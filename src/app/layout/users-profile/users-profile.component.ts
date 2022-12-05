@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Post } from 'src/app/models/Post';
 import { User } from 'src/app/models/User';
 import { CommentService } from 'src/app/services/comment.service';
@@ -8,26 +9,34 @@ import { PostService } from 'src/app/services/post.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: 'app-user-posts',
-  templateUrl: './user-posts.component.html',
-  styleUrls: ['./user-posts.component.css']
+  selector: 'app-users-profile',
+  templateUrl: './users-profile.component.html',
+  styleUrls: ['./users-profile.component.css']
 })
-export class UserPostsComponent implements OnInit {
+export class UsersProfileComponent implements OnInit {
 
+  user: User;
   posts: Post[];
-  currentUser: User;
-  isPostsLoaded = false;
   isUserDataLoaded = false;
+  isPostsLoaded = false;
 
-  constructor(private postService: PostService,
-    private userService: UserService,
-    private commentService: CommentService,
+  constructor(private activatedroute: ActivatedRoute,
     private notificationService: NotificationService,
-    private imageService: ImageService) { }
+    private imageService: ImageService,
+    private userService: UserService,
+    private postService: PostService,
+    private commentService: CommentService,
+    private router: Router) { }
 
   ngOnInit(): void {
-    this.initPosts();
     this.initUser();
+    this.userService.getCurrentUser()
+      .subscribe(data => {
+        if (data.id == this.user.id) {
+          this.router.navigate(['/profile']);
+        }
+        this.initPosts();
+      });
   }
 
   likePost(postId: number, postIndex: number): void {
@@ -48,53 +57,31 @@ export class UserPostsComponent implements OnInit {
       });
   }
 
-  deletePost(post: Post, index: number): void {
-    const result = confirm('Do you really want to delete this post?');
-    if (result) {
-      this.postService.deletePost(post.id!)
-        .subscribe(() => {
-          this.notificationService.showSnackBar('Post deleted');
-          window.location.reload();
+  initUser(): void {
+    this.activatedroute.params.subscribe(data => {
+      this.userService.getUserById(data.id)
+        .subscribe(data => {
+          this.user = data;
+          this.imageService.getImageToCurrentUser()
+            .subscribe(data => {
+              try {
+                this.user.image = data.imageBytes;
+              } catch {
+                this.notificationService.showSnackBar(data.message);
+              }
+            });
+          this.isUserDataLoaded = true;
         });
-    }
-  }
-
-  deleteComment(commentId: number, postIndex: number, commentIndex: number): void {
-    const result = confirm('Do you really want to delete this comment?');
-    if (result) {
-      const post = this.posts[postIndex];
-
-      this.commentService.deleteComment(commentId)
-        .subscribe(() => {
-          this.notificationService.showSnackBar('Comment removed');
-          window.location.reload();
-        });
-    }
-  }
-
-  formatImage(img: any): any {
-    if (img == null) {
-      return null;
-    }
-
-    return 'data:image/jpeg;base64,' + img;
+    })
   }
 
   initPosts(): void {
-    this.postService.getAllPostsForCurrentUser()
+    this.postService.getAllPostsForUserById(this.user.id)
       .subscribe(data => {
         this.posts = data;
         this.getImagesToPosts(this.posts);
         this.getImagesToUsers(this.posts);
         this.isPostsLoaded = true;
-      });
-  }
-
-  initUser(): void {
-    this.userService.getCurrentUser()
-      .subscribe(data => {
-        this.currentUser = data;
-        this.isUserDataLoaded = true;
       });
   }
 
@@ -118,4 +105,13 @@ export class UserPostsComponent implements OnInit {
       })
     });
   }
+
+  formatImage(img: any): any {
+    if (img == null) {
+      return null;
+    }
+
+    return 'data:image/jpeg;base64,' + img;
+  }
+
 }

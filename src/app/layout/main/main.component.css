@@ -15,6 +15,9 @@
   color: darkred;
 }
 
-.not-liked {
-  color: grey;
+.avatar{
+  margin: 5px;
+  height: 25px;
+  width: 25px;
+  border-radius: 100%;
 }

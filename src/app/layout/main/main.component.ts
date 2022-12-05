@@ -15,7 +15,7 @@ import { UserService } from 'src/app/services/user.service';
 export class MainComponent implements OnInit {
 
   posts: Post[];
-  user: User;
+  currentUser: User;
   isPostsLoaded = false;
   isUserDataLoaded = false;
 
@@ -26,17 +26,51 @@ export class MainComponent implements OnInit {
     private imageService: ImageService) { }
 
   ngOnInit(): void {
+    this.initPosts();
+    this.initUser();
+  }
+
+
+  likePost(postId: number, postIndex: number): void {
+    this.postService.likePost(this.posts[postIndex].id!)
+      .subscribe(() => {
+        this.notificationService.showSnackBar('Like');
+        window.location.reload();
+      })
+  }
+
+  commentPost(message: string, postId: number, postIndex: number): void {
+    const post = this.posts[postIndex];
+
+    this.commentService.createComment(post.id!, message)
+      .subscribe(data => {
+        this.notificationService.showSnackBar('Comment writed');
+        window.location.reload();
+      });
+  }
+
+  formatImage(img: any): any {
+    if (img == null) {
+      return null;
+    }
+
+    return 'data:image/jpeg;base64,' + img;
+  }
+
+  initPosts(): void {
     this.postService.getAllPosts()
       .subscribe(data => {
         this.posts = data;
-        this.getCommentsToPosts(this.posts);
         this.getImagesToPosts(this.posts);
+        this.getImagesToUsers(this.posts);
         this.isPostsLoaded = true;
       });
+  }
 
+  initUser(): void {
     this.userService.getCurrentUser()
       .subscribe(data => {
-        this.user = data;
+        this.currentUser = data;
         this.isUserDataLoaded = true;
       });
   }
@@ -50,51 +84,15 @@ export class MainComponent implements OnInit {
     });
   }
 
-  getCommentsToPosts(posts: Post[]): void {
+  getImagesToUsers(posts: Post[]): void {
     posts.forEach(p => {
-      this.commentService.getCommentsToPost(p.id!)
-        .subscribe(data => {
-          p.comments = data;
-        })
+      const comments = p.comments;
+      comments?.forEach(c => {
+        this.imageService.getImageToUser(c.personDto.id)
+          .subscribe(data => {
+            c.personDto.image = data.imageBytes;
+          })
+      })
     });
-  }
-
-  likePost(postId: number, postIndex: number): void {
-    const post = this.posts[postIndex];
-
-    if (!post.userLiked!.includes(this.user.username)) {
-      this.postService.likePost(post.id!, this.user.username)
-        .subscribe(() => {
-          post.userLiked!.push(this.user.username);
-          this.notificationService.showSnackBar('Liked ;)');
-          window.location.reload();
-        });
-    } else {
-      this.postService.likePost(post.id!, this.user.username)
-        .subscribe(() => {
-          const index = post.userLiked!.indexOf(this.user.username, 0);
-          post.userLiked!.splice(index, 1);
-          this.notificationService.showSnackBar('Like removed ;(');
-          window.location.reload();
-        });
-    }
-  }
-
-  commentPost(message: string, postId: number, postIndex: number): void {
-    const post = this.posts[postIndex];
-
-    this.commentService.createComment(post.id!, message)
-      .subscribe(data => {
-        post.comments!.push(data);
-        window.location.reload();
-      });
-  }
-
-  formatImage(img: any): any {
-    if (img == null) {
-      return null;
-    }
-
-    return 'data:image/jpeg;base64,' + img;
   }
 }

@@ -7,9 +7,10 @@
         <mat-icon>login</mat-icon>
     </button>
 
-    <h3 *ngIf="isDataLoaded">{{this.user.username}}</h3>
-
     <div *ngIf="isLoggedIn" class="spacer-mini">
+        <h3 *ngIf="isDataLoaded">{{this.user.username}}</h3>
+        <img class="avatar" mat-card-image [src]="formatImage(user.image) || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'" alt="post image">
+
         <a routerLink="/main"><mat-icon>feed</mat-icon></a>
         <a routerLink="/profile"><mat-icon>account_circle</mat-icon></a>
         <a href="" (click)="logout()"><mat-icon>logout</mat-icon></a>

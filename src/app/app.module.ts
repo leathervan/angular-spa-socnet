@@ -17,6 +17,7 @@ import { ProfileComponent } from './layout/profile/profile.component';
 import { UserPostsComponent } from './layout/user-posts/user-posts.component';
 import { EditUserComponent } from './layout/edit-user/edit-user.component';
 import { AddPostComponent } from './layout/add-post/add-post.component';
+import { UsersProfileComponent } from './layout/users-profile/users-profile.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { AddPostComponent } from './layout/add-post/add-post.component';
     ProfileComponent,
     UserPostsComponent,
     EditUserComponent,
-    AddPostComponent
+    AddPostComponent,
+    UsersProfileComponent
   ],
   imports: [
     BrowserModule,

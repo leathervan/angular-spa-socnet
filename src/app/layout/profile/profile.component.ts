@@ -7,7 +7,6 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { PostService } from 'src/app/services/post.service';
 import { TokenStorageService } from 'src/app/services/token-storage.service';
 import { UserService } from 'src/app/services/user.service';
-import { AddPostComponent } from '../add-post/add-post.component';
 import { EditUserComponent } from '../edit-user/edit-user.component';
 
 @Component({
@@ -19,13 +18,10 @@ export class ProfileComponent implements OnInit {
 
   user: User;
   selectedFile: File;
-  userProfileImage: File;
   previewImageURL: any;
   isUserDataLoaded = false;
 
-  constructor(private tokenService: TokenStorageService,
-    private postService: PostService,
-    private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
     private notificationService: NotificationService,
     private imageService: ImageService,
     private userService: UserService) { }
@@ -34,16 +30,15 @@ export class ProfileComponent implements OnInit {
     this.userService.getCurrentUser()
       .subscribe(data => {
         this.user = data;
+        this.imageService.getImageToCurrentUser()
+          .subscribe(data => {
+            try {
+              this.user.image = data.imageBytes;
+            } catch {
+              this.notificationService.showSnackBar(data.message);
+            }
+          });
         this.isUserDataLoaded = true;
-      });
-
-    this.imageService.getImageToUser()
-      .subscribe(data => {
-        try {
-          this.userProfileImage = data.imageBytes;
-        } catch {
-          this.notificationService.showSnackBar(data.message);
-        }
       });
   }
 

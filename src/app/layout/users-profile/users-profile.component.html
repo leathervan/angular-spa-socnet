@@ -1,0 +1,68 @@
+<div *ngIf="isUserDataLoaded" class="user-profile">
+
+    <h1>Profile</h1>
+    <div style="padding-top: 2rem" class="row">
+        <div class="col">
+            <img class="profile-image"
+                [src]="formatImage(user.image) || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'"
+                alt="user image">
+        </div>
+        <div class="col" style="text-align: left">
+
+            <h2>{{user.username}}</h2>
+
+            <p>{{user.bio}}</p>
+        </div>
+
+        <mat-divider style="margin: 2rem 0"></mat-divider>
+
+    </div>
+
+    <div *ngIf="isPostsLoaded && isUserDataLoaded" class="index-page">
+        <mat-card class="post-card" *ngFor="let post of posts; let i = index" fxFlexAlign="stretch">
+            <mat-card-header>
+                <div style="display: flex; flex-direction: column; align-items: start">
+                    <mat-card-subtitle>Posted by <a class="link" [routerLink]="['/user', post.personDto!.id]">{{post.personDto!.username}}</a></mat-card-subtitle>
+                    <mat-card-subtitle>{{post.location}}</mat-card-subtitle>
+                </div>
+            </mat-card-header>
+            <img *ngIf="post.image != null" mat-card-image [src]="formatImage(post.image)" alt="post image">
+            <div style="display: flex; align-items: center; justify-content: space-between;">
+                <mat-card-title>{{post.title}}</mat-card-title>
+                <mat-card-actions>
+                    <button *ngIf="isUserDataLoaded" mat-button (click)="likePost(post.id!, i)" class="is-liked">
+                        <mat-icon>favorite</mat-icon> {{post.peopleLikedPost!.length}} likes
+                    </button>
+                </mat-card-actions>
+            </div>
+            <div style="display: flex; align-items: center; justify-content: start;">
+                <mat-card-content>
+                    <p>{{post.caption}}</p>
+                </mat-card-content>
+            </div>
+
+            <div>
+                <div *ngFor="let comment of post.comments"
+                    style="display: flex; align-items: center; justify-content: start;">
+                    <span style="font-weight: 500;">{{comment.personDto.username}}</span>
+                    <img class="avatar" mat-card-image
+                        [src]="formatImage(comment.personDto.image) || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'"
+                        alt="post image">
+                    <span style="font-weight: 200;">:{{comment.message}}</span>
+                </div>
+            </div>
+
+            <mat-form-field class="w-100">
+                <mat-label>Write a comment...</mat-label>
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <input #nameText matInput #message maxlength="128">
+                    <button mat-flat-button color="primary" (click)="commentPost(nameText.value, post.id!, i)">
+                        <mat-icon>send</mat-icon>
+                    </button>
+                </div>
+            </mat-form-field>
+
+        </mat-card>
+    </div>
+
+</div>

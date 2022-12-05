@@ -25,8 +25,12 @@ export class ImageService {
     return this.http.post(IMAGE_API + 'upload/' + postId, uploadData);
   }
 
-  getImageToUser(): Observable<any> {
+  getImageToCurrentUser(): Observable<any> {
     return this.http.get(IMAGE_API + 'avatar');
+  }
+
+  getImageToUser(userId: number): Observable<any> {
+    return this.http.get(IMAGE_API + 'avatar/' + userId);
   }
 
   getImageToPost(postId: number): Observable<any> {

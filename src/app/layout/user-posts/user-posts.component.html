@@ -6,7 +6,10 @@
     <mat-card class="post-card" *ngFor="let post of posts; let i = index" fxFlexAlign="stretch">
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <mat-card-header>
-                <mat-card-subtitle text-align="start">Posted by {{post.username}}</mat-card-subtitle>
+                <div style="display: flex; flex-direction: column; align-items: start">
+                    <mat-card-subtitle>Posted by <a class="link" [routerLink]="['/user', post.personDto!.id]">{{post.personDto!.username}}</a></mat-card-subtitle>
+                    <mat-card-subtitle>{{post.location}}</mat-card-subtitle>
+                </div>
             </mat-card-header>
             <mat-card-actions>
                 <button color="warn" mat-button (click)="deletePost(post, i)">
@@ -16,14 +19,10 @@
         </div>
         <img *ngIf="post.image != null" mat-card-image [src]="formatImage(post.image)" alt="post image">
         <div style="display: flex; align-items: center; justify-content: space-between;">
-            <div style="display: flex; flex-direction: column;">
-                <mat-card-title text-align="start">{{post.title}}</mat-card-title>
-                <mat-card-subtitle text-align="start">{{post.location}}</mat-card-subtitle>
-            </div>
-            <mat-card-actions text-align="end">
-                <button *ngIf="isUserDataLoaded" mat-button (click)="likePost(post.id!, i)"
-                    [ngClass]="post.userLiked!.indexOf(user.username) !== -1 ? 'is-liked' : 'not-liked'">
-                    <mat-icon>favorite</mat-icon> {{post.likes}} likes
+            <mat-card-title>{{post.title}}</mat-card-title>
+            <mat-card-actions>
+                <button *ngIf="isUserDataLoaded" mat-button (click)="likePost(post.id!, i)" class="is-liked">
+                    <mat-icon>favorite</mat-icon> {{post.peopleLikedPost!.length}} likes
                 </button>
             </mat-card-actions>
         </div>
@@ -33,13 +32,18 @@
             </mat-card-content>
         </div>
 
-        <div style="text-align: left">
-            <p *ngFor="let comment of post.comments; let c = index">
-                <span style="font-weight: 500;">{{comment.username}}</span>: {{comment.message}}
-                <button color="accent" mat-button (click)="deleteComment(comment.id, i, c)">
+        <div>
+            <div *ngFor="let comment of post.comments"
+                style="display: flex; align-items: center; justify-content: start;">
+                <span style="font-weight: 500;">{{comment.personDto.username}}</span>
+                <img class="avatar" mat-card-image
+                    [src]="formatImage(comment.personDto.image) || 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'"
+                    alt="post image">
+                <span style="font-weight: 200;">:{{comment.message}}</span>
+                <button color="accent" mat-button (click)="deleteComment(comment.id, i, comment.id)">
                     <mat-icon color="accent">clear</mat-icon>
                 </button>
-            </p>
+            </div>
         </div>
 
         <mat-form-field class="w-100">

@@ -24,11 +24,15 @@ export class PostService {
     return this.http.get(POST_API + 'person/posts');
   }
 
+  getAllPostsForUserById(id: number): Observable<any> {
+    return this.http.get(POST_API + id + '/posts');
+  }
+
   deletePost(id: number): Observable<any> {
     return this.http.post(POST_API + 'delete/' + id, null);
   }
 
-  likePost(id: number, username: string): Observable<any> {
-    return this.http.post(POST_API + 'like/' + id + '/' + username, null);
+  likePost(id: number): Observable<any> {
+    return this.http.post(POST_API + 'like/' + id, null);
   }
 }

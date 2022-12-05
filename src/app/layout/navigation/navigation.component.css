@@ -12,3 +12,9 @@
     margin-left: 10px;
     color: white;
 }
+.avatar{
+    margin: 5px 5px;
+    height: 25px;
+    width: 25px;
+    border-radius: 50%;
+}

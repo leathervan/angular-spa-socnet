@@ -27,7 +27,6 @@ export class EditUserComponent implements OnInit {
   createEditForm(): FormGroup {
     return this.formBuilder.group({
       username: [this.data.user.username, Validators.compose([Validators.required])],
-      password: ['', Validators.compose([Validators.required])],
       bio: [this.data.user.bio, Validators.compose([Validators.required])]
     })
   }
@@ -46,7 +45,6 @@ export class EditUserComponent implements OnInit {
 
   private updateUser(): User {
     this.data.user.username = this.profileForm.value.username;
-    this.data.user.password = this.profileForm.value.password;
     this.data.user.bio = this.profileForm.value.bio;
     return this.data.user;
   }
